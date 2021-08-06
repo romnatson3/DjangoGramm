@@ -107,10 +107,9 @@ window.addEventListener('scroll', function(e) {
                     card.appendChild(card_body)
                     container.appendChild(card)
                     var str = `<b><a href="profile/${data[i]['username']}"><img src="${data[i]['avatar']}" width="40px" height="40px">${data[i]['username']}</a></b>`
-                    if (document.location.href.search('profile') || document.location.href.search('my_post')) {
-                        null
-                    } else {
+                    if (document.location.href.search('profile') == -1 & document.location.href.search('my_post') == -1) {
                         card_body.insertAdjacentHTML('beforeend', str)
+                    } else {
                     }
                 }
             }
