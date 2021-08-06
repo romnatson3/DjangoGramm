@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+
+
+<section class="container my-5" style="width: 350px; margin-left: 0px;">    
+
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+        <div class="input-group mb-3">
+          <input type="file" class="form-control" name="photo" id="photo">
+        </div>
+
+        <div class="mb-3">
+	  <label for="description" class="form-label">Description:</label>
+	  <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+	</div>
+
+
+        <button type="submit" class="btn btn-success" >Post</button>
+    </form>
+
+</section>
+
+{% block script %}
+<script src="{% get_media_prefix %}js/scroll.js"></script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% load static %}
+{% load bootstrap5 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=1200px">
+    <title>{% block title %}{% endblock %}DjangoGram</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style type="text/css">
+        .card-img-top {
+            width: 100%;
+            height: 40vh;
+            object-fit: cover;
+        }
+
+        body {
+            min-width: 1200px;
+            padding: 0px 15px;
+        }
+    </style>
+
+
+    </head>
+	<body>
+            <header>
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <div class="container-lg">
+                    <a class="navbar-brand" href="{% url 'home' %}">DjangoGram</a>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'add_post' %}">Add Post</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'signin' %}" >Sign In ({{ request.user }})</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'logoff' %}" >Sign Out</a>
+                        </li>
+                    </ul>
+                    {% if '/' == request.path %}
+                      <form class="d-flex" method="get" enctype="multipart/form-data">
+                        <input class="form-control me-2" name="search" id="search" type="search" placeholder="Search by posts description:" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                      </form>
+                    {% endif %}
+                    </div>
+                  </div>
+                </nav>
+            </header>
+
+<section class="container-lg">    
+    {% block content %}{% endblock %} 
+</section>
+
+    {% block script %}{% endblock %}
+
+        </body>
+</html>

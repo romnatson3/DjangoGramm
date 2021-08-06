@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+{% load static %}
+
+
+<div class="container border-bottom my-5">
+    <div class="row">
+        <div class="col-sm-3">
+            <img class="card-img" src="{{ user.avatar.avatar.url }}" alt="{{ user.username }}">
+        </div>
+        <div class="col-sm-4">
+            <table class="table table-borderless" style="">
+                <tr>
+                    <td colspan="2">
+                        <p class="name"><h3 class="d-inline">{{ user.username }}</h3> 
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" href="{% url 'profile' user.username %}" role="button">Edit profile</a></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p><b>{{ data.posts }}</b></p>
+                        <p><a href="{% url 'home' %}?my_post=True">Posts</a></p>
+                    </td>
+                    <td>
+                        <p><b>{{ data.follower }}</b></p>
+                        <p>Followers</p>
+                    </td>
+                    <td>
+                        <p><b>{{ data.following }}</b></p>
+                        <p>Following</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <p>{{ user.first_name }} {{ user.last_name }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="word-wrap:break-all;">
+                        <p>{{ user.avatar.bio }}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="container">
+{% for i in posts_list %}
+    
+<div class="card mb-3 mx-3" style="width: 40%; float: left";>
+    <div class="btn btn-primary position-relative position-absolute top-0 start-0">
+        {% if i.like %}
+        <span id="post_id_{{ i.post_id }}" class="bi bi-hand-thumbs-up-fill h5">{{ i.like_count }}</span>
+        {% else %}
+        <span id="post_id_{{ i.post_id }}" class="bi bi-hand-thumbs-up h5">{{ i.like_count }}</span>
+        {% endif %}
+    </div>
+    <img src="{{ i.photo }}" alt="{{ i.photo }}" class="card-img-top">
+    <div class="card-body">
+        <p class="card-text">{{ i.datetime }}</p>
+        <p class="card-text">{{ i.description }}</p>
+        {% if not request.GET.my_post %}
+        <b><a href="{% url 'profile' i.username %}"><img src="{{ i.avatar }}" alt="{{ i.avatar }}" width="40px" height="40px">{{ i.username }}</a></b>
+        {% endif %}
+    </div>
+</div>
+
+{% endfor %}
+</div>
+
+{% block script %}
+<script src="{% get_media_prefix %}js/like_pages.js"></script>
+{% endblock %}
+
+{% endblock %}
