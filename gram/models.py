@@ -1,10 +1,22 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.db import models
 #from cloudinary.models import CloudinaryField
 from main.settings import NONAME_AVATAR
 
 # Create your models here.
 
+
+class First(models.Model):
+    bio = models.TextField(blank=True, null=True)
+    num = models.TextField(blank=True, null=True)
+
+class Main(models.Model):
+    name = models.TextField(blank=True, null=True)
+    bio = models.ForeignKey(First, on_delete=models.RESTRICT, related_name='fff')
+
+class Main2(models.Model):
+    name = models.TextField(blank=True, null=True)
+    bio2 = models.ForeignKey(First, on_delete=models.RESTRICT, related_name='qqq')
 
 class Avatar(models.Model):
 
@@ -36,6 +48,9 @@ class Post(models.Model):
         indexes = [
            models.Index(fields=['description']),
         ]
+        permissions = (
+            ('create_post', 'Can create post'),
+        )
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     datetime = models.DateTimeField(auto_now_add=True)

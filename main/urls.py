@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from gram.views import signin, home, register, confirm_email, profile, logoff, add_post, follow, like, scroll
 from django.conf import settings
-from django.conf.urls.static import static
+from django.views.static import serve
 from django.contrib.auth import logout
 
 
@@ -34,9 +34,6 @@ urlpatterns = [
     path('like/', like, name='like'),
     path('scroll/', scroll, name='scroll'),
     path('', include('social_django.urls', namespace='social')),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
-
-
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
