@@ -1,9 +1,9 @@
+import logging
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, JsonResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from gram.models import User, Avatar, ConfirmEmail, Post, Like, Follow
-from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
@@ -13,9 +13,10 @@ from django.db.models import Count
 from django.db import IntegrityError
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from gram.mail import send_mail
 
 
-# Create your views here.
+logger = logging.getLogger(__name__)
 
 
 def get_random_str():
@@ -31,9 +32,13 @@ def signin(request):
             password = request.POST['password']
             user = authenticate(username=username, password=password)
             if user:
+                logger.info(f'User {user.username} is authenticated')
                 if user.is_active:
                     login(request, user)
                     return redirect(reverse('home'))
+            else:
+                logger.warning(f'User {username} is not authenticated')
+                return HttpResponse('<h3>Invalid username or password</h3>', status=200)
     return render(request, 'signin.html', {})
 
 
@@ -43,7 +48,7 @@ def register(request):
         return render(request, 'register.html')
     elif request.method == 'POST':
         data = {}
-        data['username'] = request.POST.get('username')
+        data['username'] = request.POST.get('username').lower().strip()
         data['email'] = request.POST.get('email')
         data['first_name'] = request.POST.get('first_name')
         data['last_name'] = request.POST.get('last_name')
@@ -51,19 +56,18 @@ def register(request):
         data['is_active'] = False
         if User.objects.filter(username=data['username']).exists():
             return HttpResponse('<h3>This user already exists</h3>', status=200)
-        else:
-            user = User.objects.create_user(**data)
+        if User.objects.filter(email=data['email']).exists():
+            return HttpResponse('<h3>This email already exists</h3>', status=200)
+        user = User.objects.create_user(**data)
         http_host = request.META.get('HTTP_HOST')
         confirm_email_id = get_random_str()
         confirm_email = ConfirmEmail.objects.create(user=user, confirm_email_id=confirm_email_id)
         avatar = Avatar.objects.create(user=user)
         url = f'{request.scheme}://{http_host}/confirm_email/{confirm_email_id}'
         send_mail(
-            'Сonfirm your registration',
-            f'Please confirm your email address to get full access to DjangoGram.\n {url}',
-            'info@rns.pp.ua',
             [user.email],
-            fail_silently=False
+            f'Please confirm your email address to get full access to DjangoGram.\n {url}',
+            'Сonfirm your registration'
         )
         return render(request, 'confirm_email.html', {'email':user.email})
 
@@ -213,7 +217,7 @@ def add_post(request):
 @login_required()
 def like(request):
     if request.method == 'POST':
-        if request.is_ajax():
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             data = {}
             post_id = json.load(request).get('post_id')
             user = request.user
@@ -237,7 +241,7 @@ def like(request):
 @login_required()
 def scroll(request):
     if request.method == 'POST':
-        if request.is_ajax():
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             page = json.load(request).get('page')
             paginator = cache.get('pages')
             if paginator:

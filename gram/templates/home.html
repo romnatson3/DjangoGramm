@@ -3,20 +3,6 @@
 {% block content %}
 {% load static %}
 
-<pre>
-
-{{perms.groups}}
-{{perms.users}}
-
-{% if perms.gram.view_main2 %}
-QQQQQQQQQQ
-{% endif %}
-
-{{group}}
-
-</pre>
-
-
 <div class="container border-bottom my-5">
     <div class="row">
         <div class="col-sm-3">
@@ -88,5 +74,5 @@ QQQQQQQQQQ
 {% endblock %}
 
 {% block script %}
-<script src="{% get_media_prefix %}js/like_pages.js"></script>
+<script src="{% get_static_prefix %}gram/js/like_pages.js"></script>
 {% endblock %}

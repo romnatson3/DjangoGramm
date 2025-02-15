@@ -19,6 +19,7 @@ from gram.views import signin, home, register, confirm_email, profile, logoff, a
 from django.conf import settings
 from django.views.static import serve
 from django.contrib.auth import logout
+from gram.oauth import GitHubLoginView, GitHubCallbackView, GoogleLoginView, GoogleCallbackView
 
 
 urlpatterns = [
@@ -33,7 +34,10 @@ urlpatterns = [
     re_path(r'^follow/(?P<username>\w*)$', follow, name='follow'),
     path('like/', like, name='like'),
     path('scroll/', scroll, name='scroll'),
-    path('', include('social_django.urls', namespace='social')),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    path('oauth/github/login/', GitHubLoginView.as_view(), name='github_login'),
+    path('oauth/github/callback/', GitHubCallbackView.as_view(), name='github_callback'),
+    path('oauth/google/login/', GoogleLoginView.as_view(), name='google_login'),
+    path('oauth/google/callback/', GoogleCallbackView.as_view(), name='google_callback'),
 ]

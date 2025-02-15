@@ -11,33 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
-#import cloudinary
 
-
-load_dotenv('.env')
-
-
-#cloudinary.config(
-#  cloud_name = os.getenv('CLOUD_NAME'),
-#  api_key = os.getenv('API_KEY'),
-#  api_secret = os.getenv('API_SECRET')
-#)
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
-    'API_KEY': os.getenv('API_KEY'),
-    'API_SECRET': os.getenv('API_SECRET')
-}
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_HOST = 'rns.pp.ua'
-EMAIL_HOST_USER = 'info'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
+EMAIL_SERVER_PORT = os.getenv('EMAIL_SERVER_PORT')
+EMAIL_SERVER_NAME = os.getenv('EMAIL_SERVER_NAME')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,7 +32,7 @@ SECRET_KEY = 'django-insecure-)oiw-7empk2g2nr*00_!#ikd36&8864jc@1yhjtq!**zis2*t)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.8.0.2', 'romnatson3.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['10.8.0.2', 'localhost', '172.22.249.237']
 
 
 # Application definition
@@ -64,12 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
     'gram',
     'django_extensions',
-    'social_django',
-    'cloudinary',
     'bootstrap5',
 ]
 
@@ -104,18 +80,7 @@ TEMPLATES = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.github.GithubOAuth2',
 ]
-
-#Google OAuth2.0
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-LOGIN_REDIRECT_URL = '/'
-
-#Github OAuth2
-SOCIAL_AUTH_GITHUB_KEY = os.getenv('SOCIAL_AUTH_GITHUB_KEY')
-SOCIAL_AUTH_GITHUB_SECRET = os.getenv('SOCIAL_AUTH_GITHUB_SECRET')
 
 
 WSGI_APPLICATION = 'main.wsgi.application'
@@ -165,7 +130,7 @@ USE_L10N = True
 
 USE_TZ = False
 
-TIME_ZONE = 'Europe/Kiev'
+TIME_ZONE = 'Europe/Kyiv'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -181,7 +146,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-NONAME_AVATAR = 'media/noname_c2gjcn.jpg'
+NONAME_AVATAR = 'media/noname.jpeg'
 
 CACHES = {
     'default': {
@@ -190,3 +155,39 @@ CACHES = {
         'TIMEOUT': None,
     }
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'custom': {
+            'format': '[%(asctime)s] %(levelname)-7s %(message)s ',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'formatter': 'custom',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'gram': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = os.getenv('SOCIAL_AUTH_GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_SECRET')
+
+SOCIAL_AUTH_GITHUB_CLIENT_ID = os.getenv('SOCIAL_AUTH_GITHUB_CLIENT_ID')
+SOCIAL_AUTH_GITHUB_SECRET = os.getenv('SOCIAL_AUTH_GITHUB_SECRET')
