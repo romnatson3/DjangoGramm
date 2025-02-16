@@ -2,6 +2,6 @@ env/
 .env
 __pycache__/
 fill.py
-static/
-media/
-db.sqlite3
+/static
+/media
+/data

@@ -1,0 +1,52 @@
+volumes:
+  static:
+  media:
+  db:
+
+networks:
+  layer:
+    driver: bridge
+
+services:
+  web:
+    image: gram:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: /app/entrypoint.sh
+    restart: always
+    volumes:
+      - static:/app/static/
+      - media:/app/media/
+      - db:/app/data/
+    networks:
+      - layer
+    env_file:
+      - .env
+    logging:
+      driver: syslog
+      options:
+        tag: gram_web
+        syslog-facility: local5
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static:/app/static:ro
+      - media:/app/media:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    networks:
+      - layer
+    logging:
+      driver: syslog
+      options:
+        tag: gram_nginx
+        syslog-facility: local5
